@@ -211,6 +211,26 @@ services:
       - "traefik.http.services.heimdall.loadbalancer.server.port=9191"
     restart: unless-stopped
 
+  portainer:
+    image: portainer/portainer
+    container_name: portainer
+    command: -H unix:///var/run/docker.sock
+    restart: always
+    hostname: portainer.gopnik.net
+    ports:
+      - 9000:9000
+      - 8000:8000
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.portainer.rule=Host(`portainer.gopnik.net`)"
+      - "traefik.http.routers.portainer.entrypoints=websecure"
+      - "traefik.http.routers.portainer.tls.certresolver=mydnschallenge"
+    #  - "traefik.http.services.portainer.loadbalancer.server.port=9000"
+      - "traefik.docker.network=plex-treafik_default"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - portainer_data:/data
+
   traefik:
     restart: always
     image: traefik:v2.2.0
@@ -222,6 +242,9 @@ services:
       - "8080:8080"
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
-      - ./Traefik/traefik.yaml:/traefik.yaml:ro
-      - ./Traefik/etc/traefik:/etc/traefik/
-      - ./Traefik/log:/var/log/traefik/
+      - /opt/traefik/traefik.yaml:/traefik.yaml:ro
+      - /opt/traefik/etc/traefik:/etc/traefik/
+      - /opt/tarefik/log:/var/log/traefik/
+
+volumes:
+  portainer_data:
