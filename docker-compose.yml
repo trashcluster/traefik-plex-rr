@@ -328,6 +328,144 @@ services:
       - "traefik.http.services.nzbget.loadbalancer.server.port=6789"
 
 
+  influxdb:
+    hostname: influxdb
+    container_name: influxdb
+    image: influxdb
+#    networks:
+#      - internal
+    volumes:
+      - /opt/influxdb:/var/lib/influxdb
+    restart: unless-stopped
+    
+  varken:
+    hostname: varken
+    container_name: varken
+    image: boerderij/varken
+#    networks:
+#      - internal
+    volumes:
+      - /opt/varken:/config
+    environment:
+      - TZ=America/Chicago
+      - VRKN_GLOBAL_SONARR_SERVER_IDS=1,2
+      - VRKN_GLOBAL_RADARR_SERVER_IDS=1,2
+      - VRKN_GLOBAL_LIDARR_SERVER_IDS=false
+      - VRKN_GLOBAL_TAUTULLI_SERVER_IDS=1
+      - VRKN_GLOBAL_OMBI_SERVER_IDS=1
+      - VRKN_GLOBAL_SICKCHILL_SERVER_IDS=false
+      - VRKN_GLOBAL_UNIFI_SERVER_IDS=false
+      - VRKN_GLOBAL_MAXMIND_LICENSE_KEY=fFGLnJeuEKi8Z69j
+      - VRKN_INFLUXDB_URL=influxdb.gopnik.net
+      - VRKN_INFLUXDB_PORT=8086
+      - VRKN_INFLUXDB_SSL=false
+      - VRKN_INFLUXDB_VERIFY_SSL=false
+      - VRKN_INFLUXDB_USERNAME=root
+      - VRKN_INFLUXDB_PASSWORD=root
+      - VRKN_TAUTULLI_1_URL=tautulli.gopnik.net:443
+      - VRKN_TAUTULLI_1_FALLBACK_IP=51.210.10.140
+      - VRKN_TAUTULLI_1_APIKEY=fd78dbf8dcde4e3c9e8e5f22a6e14fb2
+      - VRKN_TAUTULLI_1_SSL=true
+      - VRKN_TAUTULLI_1_VERIFY_SSL=true
+      - VRKN_TAUTULLI_1_GET_ACTIVITY=true
+      - VRKN_TAUTULLI_1_GET_ACTIVITY_RUN_SECONDS=30
+      - VRKN_TAUTULLI_1_GET_STATS=true
+      - VRKN_TAUTULLI_1_GET_STATS_RUN_SECONDS=3600
+      - VRKN_SONARR_1_URL=sonarr.gopnik.net:443
+      - VRKN_SONARR_1_APIKEY=a7705bc09b3b40ff914b34dbec9226c1
+      - VRKN_SONARR_1_SSL=true
+      - VRKN_SONARR_1_VERIFY_SSL=true
+      - VRKN_SONARR_1_MISSING_DAYS=7
+      - VRKN_SONARR_1_MISSING_DAYS_RUN_SECONDS=300
+      - VRKN_SONARR_1_FUTURE_DAYS=1
+      - VRKN_SONARR_1_FUTURE_DAYS_RUN_SECONDS=300
+      - VRKN_SONARR_1_QUEUE=true
+      - VRKN_SONARR_1_QUEUE_RUN_SECONDS=300
+      - VRKN_SONARR_2_URL=sonarrvf.gopnik.net:443
+      - VRKN_SONARR_2_APIKEY=a7705bc09b3b40ff914b34dbec9226c1
+      - VRKN_SONARR_2_SSL=true
+      - VRKN_SONARR_2_VERIFY_SSL=true
+      - VRKN_SONARR_2_MISSING_DAYS=7
+      - VRKN_SONARR_2_MISSING_DAYS_RUN_SECONDS=300
+      - VRKN_SONARR_2_FUTURE_DAYS=1
+      - VRKN_SONARR_2_FUTURE_DAYS_RUN_SECONDS=300
+      - VRKN_SONARR_2_QUEUE=true
+      - VRKN_SONARR_2_QUEUE_RUN_SECONDS=300
+      - VRKN_RADARR_1_URL=radarr.gopnik.net:443
+      - VRKN_RADARR_1_APIKEY=81408eb624c249fdbbee09e32726a33f
+      - VRKN_RADARR_1_SSL=true
+      - VRKN_RADARR_1_VERIFY_SSL=true
+      - VRKN_RADARR_1_QUEUE=true
+      - VRKN_RADARR_1_QUEUE_RUN_SECONDS=300
+      - VRKN_RADARR_1_GET_MISSING=true
+      - VRKN_RADARR_1_GET_MISSING_RUN_SECONDS=300
+      - VRKN_RADARR_2_URL=radarrvf.gopnik.net:443
+      - VRKN_RADARR_2_APIKEY=cd8f9f2af9bc47818e9d35200f11f514
+      - VRKN_RADARR_2_SSL=true
+      - VRKN_RADARR_2_VERIFY_SSL=true
+      - VRKN_RADARR_2_QUEUE=true
+      - VRKN_RADARR_2_QUEUE_RUN_SECONDS=300
+      - VRKN_RADARR_2_GET_MISSING=true
+      - VRKN_RADARR_2_GET_MISSING_RUN_SECONDS=300
+#      - VRKN_LIDARR_1_URL=lidarr1.domain.tld:8686
+#      - VRKN_LIDARR_1_APIKEY=xxxxxxxxxxxxxxxx
+#      - VRKN_LIDARR_1_SSL=false
+#      - VRKN_LIDARR_1_VERIFY_SSL=false
+#      - VRKN_LIDARR_1_MISSING_DAYS=30
+#      - VRKN_LIDARR_1_MISSING_DAYS_RUN_SECONDS=300
+#      - VRKN_LIDARR_1_FUTURE_DAYS=30
+#      - VRKN_LIDARR_1_FUTURE_DAYS_RUN_SECONDS=300
+#      - VRKN_LIDARR_1_QUEUE=true
+#      - VRKN_LIDARR_1_QUEUE_RUN_SECONDS=300
+      - VRKN_OMBI_1_URL=ombi.gopnik.net:443
+      - VRKN_OMBI_1_APIKEY=2facf4ca88f64a948281a0bdc06e4a0f
+      - VRKN_OMBI_1_SSL=true
+      - VRKN_OMBI_1_VERIFY_SSL=true
+      - VRKN_OMBI_1_GET_REQUEST_TYPE_COUNTS=true
+      - VRKN_OMBI_1_REQUEST_TYPE_RUN_SECONDS=300
+      - VRKN_OMBI_1_GET_REQUEST_TOTAL_COUNTS=true
+      - VRKN_OMBI_1_REQUEST_TOTAL_RUN_SECONDS=300
+      - VRKN_OMBI_1_GET_ISSUE_STATUS_COUNTS=true
+      - VRKN_OMBI_1_ISSUE_STATUS_RUN_SECONDS=300
+#      - VRKN_SICKCHILL_1_URL=sickchill.domain.tld:8081
+#      - VRKN_SICKCHILL_1_APIKEY=xxxxxxxxxxxxxxxx
+#      - VRKN_SICKCHILL_1_SSL=false
+#      - VRKN_SICKCHILL_1_VERIFY_SSL=false
+#      - VRKN_SICKCHILL_1_GET_MISSING=true
+#      - VRKN_SICKCHILL_1_GET_MISSING_RUN_SECONDS=300
+#      - VRKN_UNIFI_1_URL=unifi.domain.tld:8443
+#      - VRKN_UNIFI_1_USERNAME=ubnt
+#      - VRKN_UNIFI_1_PASSWORD=ubnt
+#      - VRKN_UNIFI_1_SITE=default
+#      - VRKN_UNIFI_1_USG_NAME=MyRouter
+#      - VRKN_UNIFI_1_SSL=false
+#      - VRKN_UNIFI_1_VERIFY_SSL=false
+#      - VRKN_UNIFI_1_GET_USG_STATS_RUN_SECONDS=300
+    depends_on:
+      - influxdb
+    restart: unless-stopped
+  grafana:
+    hostname: grafana
+    container_name: grafana
+    image: grafana/grafana
+#    networks:
+#      - internal
+    ports:
+      - 3000:3000
+    volumes: 
+      - /opt/grafana:/config
+    environment:
+      - GF_PATHS_DATA=/config/data
+      - GF_PATHS_LOGS=/config/logs
+      - GF_PATHS_PLUGINS=/config/plugins
+      - GF_INSTALL_PLUGINS=grafana-piechart-panel,grafana-worldmap-panel
+    depends_on:
+      - influxdb
+      - varken
+    restart: unless-stopped
+
+######################################################################################################################
+
   traefik:
     restart: always
     image: traefik:v2.2.0
