@@ -5,8 +5,8 @@ services:
     container_name: plex
     environment:
       - TZ=Europe/Paris
-      - PLEX_CLAIM=claim-XXXXXXXXXXXXXXXX
-      - ADVERTISE_IP=https://plex.EXAMPLE.COM:443
+      - PLEX_CLAIM=claim-Kyd5zDP98AxrDR_xAf1G
+      - ADVERTISE_IP=https://plex.gopnik.net:443
       - PLEX_UID=1000
       - PLEX_GID=1000
       - VERSION=docker
@@ -14,7 +14,7 @@ services:
       - /opt/plex/config:/config
       - /opt/plex/transcode:/transcode
       - /data:/data
-    hostname: plex.EXAMPLE.COM
+    hostname: plex.gopnik.net
     ports:
      - 32400:32400/tcp
      - 32400:32400/udp
@@ -29,7 +29,7 @@ services:
     restart: always
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.plex.rule=Host(`plex.EXAMPLE.COM`)"
+      - "traefik.http.routers.plex.rule=Host(`plex.gopnik.net`)"
       - "traefik.http.routers.plex.entrypoints=websecure"
       - "traefik.http.routers.plex.tls.certresolver=mydnschallenge"
       - "traefik.http.services.plex.loadbalancer.server.port=32400"
@@ -45,15 +45,37 @@ services:
     volumes:
       - /opt/sonarr/config:/config
       - /data:/data
-    hostname: sonarr.EXAMPLE.COM
+    hostname: sonarr.gopnik.net
     ports:
       - 8989:8989
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.sonarr.rule=Host(`sonarr.EXAMPLE.COM`)"
+      - "traefik.http.routers.sonarr.rule=Host(`sonarr.gopnik.net`)"
       - "traefik.http.routers.sonarr.entrypoints=websecure"
       - "traefik.http.routers.sonarr.tls.certresolver=mydnschallenge"
       - "traefik.http.services.sonarr.loadbalancer.server.port=8989"
+    restart: unless-stopped
+
+  sonarrVF:
+    image: linuxserver/sonarr:preview
+    container_name: sonarrVF
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Europe/Paris
+      - UMASK_SET=022 #optional
+    volumes:
+      - /opt/sonarrvf/config:/config
+      - /data:/data
+    hostname: sonarrvf.gopnik.net
+    ports:
+      - 8990:8990
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.sonarrvf.rule=Host(`sonarrvf.gopnik.net`)"
+      - "traefik.http.routers.sonarrvf.entrypoints=websecure"
+      - "traefik.http.routers.sonarrvf.tls.certresolver=mydnschallenge"
+      - "traefik.http.services.sonarrvf.loadbalancer.server.port=8990"
     restart: unless-stopped
 
   radarr:
@@ -67,15 +89,37 @@ services:
     volumes:
       - /opt/radarr/config:/config
       - /data:/data
-    hostname: radarr.EXAMPLE.COM
+    hostname: radarr.gopnik.net
     ports:
       - 7878:7878
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.radarr.rule=Host(`radarr.EXAMPLE.COM`)"
+      - "traefik.http.routers.radarr.rule=Host(`radarr.gopnik.net`)"
       - "traefik.http.routers.radarr.entrypoints=websecure"
       - "traefik.http.routers.radarr.tls.certresolver=mydnschallenge"
       - "traefik.http.services.radarr.loadbalancer.server.port=7878"
+    restart: unless-stopped
+
+  radarrVF:
+    image: linuxserver/radarr:preview
+    container_name: radarrVF
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Europe/Paris
+      - UMASK_SET=022 #optional
+    volumes:
+      - /opt/radarrvf/config:/config
+      - /data:/data
+    hostname: radarrvf.gopnik.net
+    ports:
+      - 7879:7879
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.radarrvf.rule=Host(`radarrvf.gopnik.net`)"
+      - "traefik.http.routers.radarrvf.entrypoints=websecure"
+      - "traefik.http.routers.radarrvf.tls.certresolver=mydnschallenge"
+      - "traefik.http.services.radarrvf.loadbalancer.server.port=7879"
     restart: unless-stopped
 
   qbittorrent:
@@ -90,14 +134,14 @@ services:
     volumes:
       - /opt/qbittorrent/config:/config
       - /data:/data
-    hostname: qbit.EXAMPLE.COM
+    hostname: qbit.gopnik.net
     ports:
       - 6881:6881
       - 6881:6881/udp
       - 6565:6565
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.qbit.rule=Host(`qbit.EXAMPLE.COM`)"
+      - "traefik.http.routers.qbit.rule=Host(`qbit.gopnik.net`)"
       - "traefik.http.routers.qbit.entrypoints=websecure"
       - "traefik.http.routers.qbit.tls.certresolver=mydnschallenge"
       - "traefik.http.services.qbit.loadbalancer.server.port=6565"
@@ -115,12 +159,12 @@ services:
     volumes:
       - /opt/jackett/config:/config
       - /opt/jackett/downloads:/downloads
-    hostname: jackett.EXAMPLE.COM
+    hostname: jackett.gopnik.net
     ports:
       - 9117:9117
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.jackett.rule=Host(`jackett.EXAMPLE.COM`)"
+      - "traefik.http.routers.jackett.rule=Host(`jackett.gopnik.net`)"
       - "traefik.http.routers.jackett.entrypoints=websecure"
       - "traefik.http.routers.jackett.tls.certresolver=mydnschallenge"
       - "traefik.http.services.jackett.loadbalancer.server.port=9117"
@@ -136,12 +180,12 @@ services:
     volumes:
       - /opt/tautulli/config:/config
       - /opt/plex/config/Library/Application\ Support/Plex\ Media\ Server/Logs/:/logs
-    hostname: tautulli.EXAMPLE.COM
+    hostname: tautulli.gopnik.net
     ports:
       - 8181:8181
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.tautulli.rule=Host(`tautulli.EXAMPLE.COM`)"
+      - "traefik.http.routers.tautulli.rule=Host(`tautulli.gopnik.net`)"
       - "traefik.http.routers.tautulli.entrypoints=websecure"
       - "traefik.http.routers.tautulli.tls.certresolver=mydnschallenge"
       - "traefik.http.services.tautulli.loadbalancer.server.port=8181"
@@ -158,12 +202,12 @@ services:
     volumes:
       - /opt/bazarr/config:/config
       - /data:/data
-    hostname: bazarr.EXAMPLE.COM
+    hostname: bazarr.gopnik.net
     ports:
       - 6767:6767
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.bazarr.rule=Host(`bazarr.EXAMPLE.COM`)"
+      - "traefik.http.routers.bazarr.rule=Host(`bazarr.gopnik.net`)"
       - "traefik.http.routers.bazarr.entrypoints=websecure"
       - "traefik.http.routers.bazarr.tls.certresolver=mydnschallenge"
       - "traefik.http.services.bazarr.loadbalancer.server.port=8181"
@@ -179,50 +223,50 @@ services:
       - BASE_URL=/ombi #optional
     volumes:
       - /opt/ombi/config:/config
-    hostname: ombi.EXAMPLE.COM
+    hostname: ombi.gopnik.net
     ports:
       - 3579:3579
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.ombi.rule=Host(`ombi.EXAMPLE.COM`)"
+      - "traefik.http.routers.ombi.rule=Host(`ombi.gopnik.net`)"
       - "traefik.http.routers.ombi.entrypoints=websecure"
       - "traefik.http.routers.ombi.tls.certresolver=mydnschallenge"
       - "traefik.http.services.ombi.loadbalancer.server.port=3579"
     restart: unless-stopped
 
-  heimdall:
-    image: linuxserver/heimdall
-    container_name: heimdall
-    environment:
-      - PUID=1000
-      - PGID=1000
-      - TZ=Europe/Paris
-    volumes:
-      - /opt/heimdall/config:/config
-    hostname: EXAMPLE.COM
-    ports:
-      - 9191:9191  #nginx http def 80
-      - 9292:9292  #nginx https def 443
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.heimdall.rule=Host(`EXAMPLE.COM`)"
-      - "traefik.http.routers.heimdall.entrypoints=websecure"
-      - "traefik.http.routers.heimdall.tls.certresolver=mydnschallenge"
-      - "traefik.http.services.heimdall.loadbalancer.server.port=9191"
-    restart: unless-stopped
+#  heimdall:
+#    image: linuxserver/heimdall
+#    container_name: heimdall
+#    environment:
+#      - PUID=1000
+#      - PGID=1000
+#      - TZ=Europe/Paris
+#    volumes:
+#      - /opt/heimdall/config:/config
+#    hostname: gopnik.net
+#    ports:
+#      - 9191:9191  #nginx http def 80
+#      - 9292:9292  #nginx https def 443
+#    labels:
+#      - "traefik.enable=true"
+#      - "traefik.http.routers.heimdall.rule=Host(`gopnik.net`)"
+#      - "traefik.http.routers.heimdall.entrypoints=websecure"
+#      - "traefik.http.routers.heimdall.tls.certresolver=mydnschallenge"
+#      - "traefik.http.services.heimdall.loadbalancer.server.port=9191"
+#    restart: unless-stopped
 
   portainer:
     image: portainer/portainer
     container_name: portainer
     command: -H unix:///var/run/docker.sock
     restart: always
-    hostname: portainer.EXAMPLE.COM
+    hostname: portainer.gopnik.net
     ports:
       - 9000:9000
       - 8000:8000
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.portainer.rule=Host(`portainer.EXAMPLE.COM`)"
+      - "traefik.http.routers.portainer.rule=Host(`portainer.gopnik.net`)"
       - "traefik.http.routers.portainer.entrypoints=websecure"
       - "traefik.http.routers.portainer.tls.certresolver=mydnschallenge"
     #  - "traefik.http.services.portainer.loadbalancer.server.port=9000"
@@ -231,11 +275,64 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
       - portainer_data:/data
 
+#  sinusbot:
+#    image: sinusbot/docker
+#    restart: always
+#    ports:
+#      - 8087:8087
+#    volumes:
+#      - ./scripts:/opt/sinusbot/scripts
+#      - ./data:/opt/sinusbot/data
+#    labels:
+#      - "traefik.enable=true"
+#      - "traefik.http.routers.sinusbot.rule=Host(`sinus.gopnik.net`)"
+#      - "traefik.http.routers.sinusbot.entrypoints=websecure"
+#      - "traefik.http.routers.sinusbot.tls.certresolver=mydnschallenge"
+#      - "traefik.http.services.sinusbot.loadbalancer.server.port=8087"
+
+  mellow:
+    image: voidp/mellow
+    ports:
+      - "5060:5060"
+    volumes:
+      - /opt/appdata/mellow/:/usr/src/app/data/
+    environment:
+      - PORT=5060
+      - JWT_SECRET=password123
+    restart: unless-stopped
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.mellow.rule=Host(`mellow.gopnik.net`)"
+      - "traefik.http.routers.mellow.entrypoints=websecure"
+      - "traefik.http.routers.mellow.tls.certresolver=mydnschallenge"
+      - "traefik.http.services.mellow.loadbalancer.server.port=5060"
+
+  nzbget:
+    image: linuxserver/nzbget
+    container_name: nzbget
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Europe/Paris
+    volumes:
+      - /opt/nzbget/config:/config
+      - /data:/data
+    ports:
+      - 6789:6789
+    restart: unless-stopped
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.nzbget.rule=Host(`nzbget.gopnik.net`)"
+      - "traefik.http.routers.nzbget.entrypoints=websecure"
+      - "traefik.http.routers.nzbget.tls.certresolver=mydnschallenge"
+      - "traefik.http.services.nzbget.loadbalancer.server.port=6789"
+
+
   traefik:
     restart: always
     image: traefik:v2.2.0
     read_only: true
-    hostname: traefik.EXAMPLE.COM
+    hostname: traefik.gopnik.net
     ports:
       - "80:80"
       - "443:443"
