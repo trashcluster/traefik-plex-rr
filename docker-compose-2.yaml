@@ -1,0 +1,216 @@
+version: "3"
+services:
+  sonarr:
+    image: ghcr.io/linuxserver/sonarr
+    container_name: sonarr
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Europe/Paris
+      - UMASK_SET=022 #optional
+    volumes:
+      - /opt/sonarr/config:/config
+      - /data:/data
+    hostname: sonarr.gop.onl
+    #ports:
+    #  - 8989:8989
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.sonarr.rule=Host(`sonarr.gop.onl`)"
+      - "traefik.http.routers.sonarr.entrypoints=websecure"
+      - "traefik.http.routers.sonarr.tls.certresolver=mydnschallenge"
+      - "traefik.http.services.sonarr.loadbalancer.server.port=8989"
+    restart: unless-stopped
+
+  sonarrVF:
+    image: ghcr.io/linuxserver/sonarr
+    container_name: sonarrVF
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Europe/Paris
+      - UMASK_SET=022 #optional
+    volumes:
+      - /opt/sonarrvf/config:/config
+      - /data:/data
+    hostname: sonarrvf.gop.onl
+    #ports:
+    #  - 8989:8989
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.sonarrvf.rule=Host(`sonarrvf.gop.onl`)"
+      - "traefik.http.routers.sonarrvf.entrypoints=websecure"
+      - "traefik.http.routers.sonarrvf.tls.certresolver=mydnschallenge"
+      - "traefik.http.services.sonarrvf.loadbalancer.server.port=8989"
+    restart: unless-stopped
+
+  radarr:
+    image: ghcr.io/linuxserver/radarr
+    container_name: radarr
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Europe/Paris
+      - UMASK_SET=022 #optional
+    volumes:
+      - /opt/radarr/config:/config
+      - /data:/data
+    hostname: radarr.gop.onl
+    #ports:
+    #  - 7878:7878
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.radarr.rule=Host(`radarr.gop.onl`)"
+      - "traefik.http.routers.radarr.entrypoints=websecure"
+      - "traefik.http.routers.radarr.tls.certresolver=mydnschallenge"
+      - "traefik.http.services.radarr.loadbalancer.server.port=7878"
+    restart: unless-stopped
+
+  radarrVF:
+    image: ghcr.io/linuxserver/radarr
+    container_name: radarrVF
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Europe/Paris
+      - UMASK_SET=022 #optional
+    volumes:
+      - /opt/radarrvf/config:/config
+      - /data:/data
+    hostname: radarrvf.gop.onl
+    #ports:
+    #  - 7878:7878
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.radarrvf.rule=Host(`radarrvf.gop.onl`)"
+      - "traefik.http.routers.radarrvf.entrypoints=websecure"
+      - "traefik.http.routers.radarrvf.tls.certresolver=mydnschallenge"
+      - "traefik.http.services.radarrvf.loadbalancer.server.port=7878"
+    restart: unless-stopped
+
+  qbittorrent:
+    image: linuxserver/qbittorrent:latest
+    container_name: qbittorrent
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Europe/Paris
+      - UMASK_SET=022
+      - WEBUI_PORT=6565
+    volumes:
+      - /opt/qbittorrent/config:/config
+      - /data:/data
+    hostname: qbit.gop.onl
+    #ports:
+    #  - 6881:6881
+    #  - 6881:6881/udp
+    #  - 6565:6565
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.qbit.rule=Host(`qbit.gop.onl`)"
+      - "traefik.http.routers.qbit.entrypoints=websecure"
+      - "traefik.http.routers.qbit.tls.certresolver=mydnschallenge"
+      - "traefik.http.services.qbit.loadbalancer.server.port=6565"
+    restart: unless-stopped
+
+  jackett:
+    image: linuxserver/jackett
+    container_name: jackett
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Europe/Paris
+      - RUN_OPTS=run options here #optional
+    volumes:
+      - /opt/jackett/config:/config
+      - /opt/jackett/downloads:/downloads
+    hostname: jackett.gop.onl
+    #ports:
+    #  - 9117:9117
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.jackett.rule=Host(`jackett.gop.onl`)"
+      - "traefik.http.routers.jackett.entrypoints=websecure"
+      - "traefik.http.routers.jackett.tls.certresolver=mydnschallenge"
+      - "traefik.http.services.jackett.loadbalancer.server.port=9117"
+    restart: unless-stopped
+
+  portainer:
+    image: portainer/portainer
+    container_name: portainer
+    command: -H unix:///var/run/docker.sock
+    restart: always
+    hostname: portainer.gop.onl
+    #ports:
+    #  - 9000:9000
+    #  - 8000:8000
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.portainer.rule=Host(`portainer.gop.onl`)"
+      - "traefik.http.routers.portainer.entrypoints=websecure"
+      - "traefik.http.routers.portainer.tls.certresolver=mydnschallenge"
+      - "traefik.http.services.portainer.loadbalancer.server.port=9000"
+      - "traefik.docker.network=plex-treafik_default"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - portainer_data:/data
+
+  nzbget:
+    image: linuxserver/nzbget
+    container_name: nzbget
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Europe/Paris
+    volumes:
+      - /opt/nzbget/config:/config
+      - /data:/data
+    ports:
+      - 6789:6789
+    restart: unless-stopped
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.nzbget.rule=Host(`nzbget.gop.onl`)"
+      - "traefik.http.routers.nzbget.entrypoints=websecure"
+      - "traefik.http.routers.nzbget.tls.certresolver=mydnschallenge"
+      - "traefik.http.services.nzbget.loadbalancer.server.port=6789"
+
+  nzbhydra2:
+    image: ghcr.io/linuxserver/nzbhydra2
+    container_name: nzbhydra2
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Europe/London
+    volumes:
+      - /opt/nzbhydra2/config:/config
+      - /opt/nzbhydra2/downloads:/downloads
+    ports:
+      - 5076:5076
+    restart: unless-stopped
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.nzbget.rule=Host(`nzb2.gop.onl`)"
+      - "traefik.http.routers.nzbget.entrypoints=websecure"
+      - "traefik.http.routers.nzbget.tls.certresolver=mydnschallenge"
+      - "traefik.http.services.nzbget.loadbalancer.server.port=5076"
+  ######################################################################################################################
+
+  traefik:
+    restart: always
+    container_name: traefik
+    image: traefik:latest
+    read_only: true
+    hostname: traefik.gop.onl
+    ports:
+      - "80:80"
+      - "443:443"
+      - "8080:8080"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - /opt/traefik/traefik.yaml:/traefik.yaml:ro
+      - /opt/traefik/etc/traefik:/etc/traefik/
+      - /opt/tarefik/log:/var/log/traefik/
+
+volumes:
+  portainer_data:
