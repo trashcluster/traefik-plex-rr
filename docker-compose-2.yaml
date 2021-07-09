@@ -136,7 +136,7 @@ services:
     restart: unless-stopped
 
   portainer:
-    image: portainer/portainer
+    image: portainer/portainer-ce
     container_name: portainer
     command: -H unix:///var/run/docker.sock
     restart: always
@@ -150,7 +150,6 @@ services:
       - "traefik.http.routers.portainer.entrypoints=websecure"
       - "traefik.http.routers.portainer.tls.certresolver=mydnschallenge"
       - "traefik.http.services.portainer.loadbalancer.server.port=9000"
-      - "traefik.docker.network=plex-treafik_default"
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - portainer_data:/data
@@ -165,8 +164,8 @@ services:
     volumes:
       - /opt/nzbget/config:/config
       - /data:/data
-    ports:
-      - 6789:6789
+    #ports:
+    #  - 6789:6789
     restart: unless-stopped
     labels:
       - "traefik.enable=true"
@@ -185,15 +184,15 @@ services:
     volumes:
       - /opt/nzbhydra2/config:/config
       - /opt/nzbhydra2/downloads:/downloads
-    ports:
-      - 5076:5076
+    #ports:
+    #  - 5076:5076
     restart: unless-stopped
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.nzbget.rule=Host(`nzb2.gop.onl`)"
-      - "traefik.http.routers.nzbget.entrypoints=websecure"
-      - "traefik.http.routers.nzbget.tls.certresolver=mydnschallenge"
-      - "traefik.http.services.nzbget.loadbalancer.server.port=5076"
+      - "traefik.http.routers.nzb2.rule=Host(`nzb2.gop.onl`)"
+      - "traefik.http.routers.nzb2.entrypoints=websecure"
+      - "traefik.http.routers.nzb2.tls.certresolver=mydnschallenge"
+      - "traefik.http.services.nzb2.loadbalancer.server.port=5076"
   ######################################################################################################################
 
   traefik:
