@@ -144,6 +144,3 @@ services:
       - ./conf/traefik/traefik.yaml:/traefik.yaml:ro
       - ./conf/traefik/etc/traefik:/etc/traefik/
       - ./conf/tarefik/log:/var/log/traefik/
-
-volumes:
-  portainer_data:
