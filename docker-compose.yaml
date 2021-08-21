@@ -128,7 +128,7 @@ services:
       - "traefik.http.routers.nzb2.tls.certresolver=mydnschallenge"
       - "traefik.http.services.nzb2.loadbalancer.server.port=5076"
       
-    plex:
+  plex:
     image: plexinc/pms-docker:latest
     container_name: plex
     environment:
