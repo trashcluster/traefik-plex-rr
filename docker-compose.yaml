@@ -9,7 +9,7 @@ services:
       - TZ=Europe/Paris
       - UMASK_SET=022 #optional
     volumes:
-      - /opt/sonarr/config:/config
+      - ./conf/sonarr/config:/config
       - /data:/data
     hostname: sonarr.gop.onl
     #ports:
@@ -31,7 +31,7 @@ services:
       - TZ=Europe/Paris
       - UMASK_SET=022 #optional
     volumes:
-      - /opt/sonarrvf/config:/config
+      - ./conf/sonarrvf/config:/config
       - /data:/data
     hostname: sonarrvf.gop.onl
     #ports:
@@ -53,7 +53,7 @@ services:
       - TZ=Europe/Paris
       - UMASK_SET=022 #optional
     volumes:
-      - /opt/radarr/config:/config
+      - ./conf/radarr/config:/config
       - /data:/data
     hostname: radarr.gop.onl
     #ports:
@@ -75,7 +75,7 @@ services:
       - TZ=Europe/Paris
       - UMASK_SET=022 #optional
     volumes:
-      - /opt/radarrvf/config:/config
+      - ./conf/radarrvf/config:/config
       - /data:/data
     hostname: radarrvf.gop.onl
     #ports:
@@ -96,7 +96,7 @@ services:
       - PGID=1000
       - TZ=Europe/Paris
     volumes:
-      - /opt/nzbget/config:/config
+      - ./conf/nzbget/config:/config
       - /data:/data
     #ports:
     #  - 6789:6789
@@ -116,8 +116,8 @@ services:
       - PGID=1000
       - TZ=Europe/London
     volumes:
-      - /opt/nzbhydra2/config:/config
-      - /opt/nzbhydra2/downloads:/downloads
+      - ./conf/nzbhydra2/config:/config
+      - ./conf/nzbhydra2/downloads:/downloads
     #ports:
     #  - 5076:5076
     restart: unless-stopped
@@ -141,9 +141,9 @@ services:
       - "8080:8080"
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
-      - /opt/traefik/traefik.yaml:/traefik.yaml:ro
-      - /opt/traefik/etc/traefik:/etc/traefik/
-      - /opt/tarefik/log:/var/log/traefik/
+      - ./conf/traefik/traefik.yaml:/traefik.yaml:ro
+      - ./conf/traefik/etc/traefik:/etc/traefik/
+      - ./conf/tarefik/log:/var/log/traefik/
 
 volumes:
   portainer_data:
