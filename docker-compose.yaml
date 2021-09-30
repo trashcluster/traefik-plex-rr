@@ -201,25 +201,31 @@ services:
       #- 8267:8267 # node port. It should be mapped on this container because
                   # the node container use the network from the main container
     environment:
-      - TZ=Europe/London
-      - PUID=${PUID}
-      - PGID=${PGID}
+      - TZ=Europe/Paris
+      - PUID=1000
+      - PGID=1000
       - UMASK_SET=002
       - serverIP=0.0.0.0
       - serverPort=8266
       - webUIPort=8265
     volumes:
-      - /docker/tdarr/server:/app/server
-      - /docker/tdarr/configs:/app/configs
-      - /docker/tdarr/logs:/app/logs
-      - /media:/media
+      - ./conf/tdarr/server:/app/server
+      - ./conf/tdarr/configs:/app/configs
+      - ./conf/tdarr/logs:/app/logs
+      - /data:/data
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.tdarr.rule=Host(`tdarr.gopnik.net`)"
+      - "traefik.http.routers.tdarr.entrypoints=websecure"
+      - "traefik.http.routers.tdarr.tls.certresolver=mydnschallenge"
+      - "traefik.http.services.tdarr.loadbalancer.server.port=8265"
 
   tdarr-node:
     container_name: tdarr-node
     image: haveagitgat/tdarr_node:latest
     restart: unless-stopped
     environment:
-      - TZ=Europe/London
+      - TZ=Europe/Pariss
       - PUID=${PUID}
       - PGID=${PGID}
       - UMASK_SET=002
@@ -229,9 +235,9 @@ services:
       - serverIP=0.0.0.0
       - serverPort=8266
     volumes:
-      - /docker/tdarr/configs:/app/configs
-      - /docker/tdarr/logs:/app/logs
-      - /media:/media
+      - ./conf/tdarrnode/configs:/app/configs
+      - ./conf/tdarrnode/logs:/app/logs
+      - /data:/data
   ######################################################################################################################
 
   traefik:
