@@ -189,6 +189,49 @@ services:
       - "traefik.http.middlewares.traefik-forward-auth.forwardauth.authResponseHeaders=X-Forwarded-User"
       - "traefik.http.middlewares.traefik-forward-auth.forwardauth.trustForwardHeader=true"
       - "traefik.http.services.traefik-forward-auth.loadbalancer.server.port=4181"
+
+
+    tdarr:
+    container_name: tdarr
+    image: haveagitgat/tdarr:latest
+    restart: unless-stopped
+    ports:
+      #- 8265:8265 # webUI port
+      #- 8266:8266 # server port
+      #- 8267:8267 # node port. It should be mapped on this container because
+                  # the node container use the network from the main container
+    environment:
+      - TZ=Europe/London
+      - PUID=${PUID}
+      - PGID=${PGID}
+      - UMASK_SET=002
+      - serverIP=0.0.0.0
+      - serverPort=8266
+      - webUIPort=8265
+    volumes:
+      - /docker/tdarr/server:/app/server
+      - /docker/tdarr/configs:/app/configs
+      - /docker/tdarr/logs:/app/logs
+      - /media:/media
+
+  tdarr-node:
+    container_name: tdarr-node
+    image: haveagitgat/tdarr_node:latest
+    restart: unless-stopped
+    environment:
+      - TZ=Europe/London
+      - PUID=${PUID}
+      - PGID=${PGID}
+      - UMASK_SET=002
+      - nodeID=MainNode
+      - nodeIP=0.0.0.0
+      - nodePort=8267
+      - serverIP=0.0.0.0
+      - serverPort=8266
+    volumes:
+      - /docker/tdarr/configs:/app/configs
+      - /docker/tdarr/logs:/app/logs
+      - /media:/media
   ######################################################################################################################
 
   traefik:
