@@ -138,7 +138,7 @@ services:
     container_name: plex
     environment:
       - TZ=Europe/Paris
-      - PLEX_CLAIM=claim-Kyd5zDP98AxrDR_xAf1G
+      - PLEX_CLAIM=claim-HocHKyyus2ra9VJGv35Y
       - ADVERTISE_IP=https://plex.gopnik.net:443
       - PLEX_UID=1000
       - PLEX_GID=1000
