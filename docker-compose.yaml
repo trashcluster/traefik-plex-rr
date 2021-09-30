@@ -20,31 +20,31 @@ services:
       - "traefik.http.routers.sonarr.entrypoints=websecure"
       - "traefik.http.routers.sonarr.tls.certresolver=mydnschallenge"
       - "traefik.http.services.sonarr.loadbalancer.server.port=8989"
-      - "traefik.http.routers.sonarr.middlewares=traefik-forward-auth"
+      #- "traefik.http.routers.sonarr.middlewares=traefik-forward-auth"
     restart: unless-stopped
 
-  sonarrVF:
-    image: ghcr.io/linuxserver/sonarr
-    container_name: sonarrVF
-    environment:
-      - PUID=1000
-      - PGID=1000
-      - TZ=Europe/Paris
-      - UMASK_SET=022 #optional
-    volumes:
-      - ./conf/sonarrvf/config:/config
-      - /data:/data
-    hostname: sonarrvf.gop.onl
-    #ports:
-    #  - 8989:8989
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.sonarrvf.rule=Host(`sonarrvf.gop.onl`)"
-      - "traefik.http.routers.sonarrvf.entrypoints=websecure"
-      - "traefik.http.routers.sonarrvf.tls.certresolver=mydnschallenge"
-      - "traefik.http.services.sonarrvf.loadbalancer.server.port=8989"
-      - "traefik.http.routers.sonarrvf.middlewares=traefik-forward-auth"
-    restart: unless-stopped
+  # sonarrVF:
+  #   image: ghcr.io/linuxserver/sonarr
+  #   container_name: sonarrVF
+  #   environment:
+  #     - PUID=1000
+  #     - PGID=1000
+  #     - TZ=Europe/Paris
+  #     - UMASK_SET=022 #optional
+  #   volumes:
+  #     - ./conf/sonarrvf/config:/config
+  #     - /data:/data
+  #   hostname: sonarrvf.gop.onl
+  #   #ports:
+  #   #  - 8989:8989
+  #   labels:
+  #     - "traefik.enable=true"
+  #     - "traefik.http.routers.sonarrvf.rule=Host(`sonarrvf.gop.onl`)"
+  #     - "traefik.http.routers.sonarrvf.entrypoints=websecure"
+  #     - "traefik.http.routers.sonarrvf.tls.certresolver=mydnschallenge"
+  #     - "traefik.http.services.sonarrvf.loadbalancer.server.port=8989"
+  #     - "traefik.http.routers.sonarrvf.middlewares=traefik-forward-auth"
+  #   restart: unless-stopped
 
   radarr:
     image: ghcr.io/linuxserver/radarr
@@ -69,28 +69,28 @@ services:
       - "traefik.http.routers.radarr.middlewares=traefik-forward-auth"
     restart: unless-stopped
 
-  radarrVF:
-    image: ghcr.io/linuxserver/radarr
-    container_name: radarrVF
-    environment:
-      - PUID=1000
-      - PGID=1000
-      - TZ=Europe/Paris
-      - UMASK_SET=022 #optional
-    volumes:
-      - ./conf/radarrvf/config:/config
-      - /data:/data
-    hostname: radarrvf.gop.onl
-    #ports:
-    #  - 7878:7878
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.radarrvf.rule=Host(`radarrvf.gop.onl`)"
-      - "traefik.http.routers.radarrvf.entrypoints=websecure"
-      - "traefik.http.routers.radarrvf.tls.certresolver=mydnschallenge"
-      - "traefik.http.services.radarrvf.loadbalancer.server.port=7878"
-      - "traefik.http.routers.radarrvf.middlewares=traefik-forward-auth"
-    restart: unless-stopped
+  # radarrVF:
+  #   image: ghcr.io/linuxserver/radarr
+  #   container_name: radarrVF
+  #   environment:
+  #     - PUID=1000
+  #     - PGID=1000
+  #     - TZ=Europe/Paris
+  #     - UMASK_SET=022 #optional
+  #   volumes:
+  #     - ./conf/radarrvf/config:/config
+  #     - /data:/data
+  #   hostname: radarrvf.gop.onl
+  #   #ports:
+  #   #  - 7878:7878
+  #   labels:
+  #     - "traefik.enable=true"
+  #     - "traefik.http.routers.radarrvf.rule=Host(`radarrvf.gop.onl`)"
+  #     - "traefik.http.routers.radarrvf.entrypoints=websecure"
+  #     - "traefik.http.routers.radarrvf.tls.certresolver=mydnschallenge"
+  #     - "traefik.http.services.radarrvf.loadbalancer.server.port=7878"
+  #     - "traefik.http.routers.radarrvf.middlewares=traefik-forward-auth"
+  #   restart: unless-stopped
 
   nzbget:
     image: linuxserver/nzbget
@@ -203,6 +203,6 @@ services:
       #- "8080:8080"
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
-      - ./conf/traefik/traefik.yaml:/traefik.yaml:ro
+      - ./traefik.yaml:/traefik.yaml:ro
       - ./conf/traefik/etc/traefik:/etc/traefik/
       - ./conf/tarefik/log:/var/log/traefik/
