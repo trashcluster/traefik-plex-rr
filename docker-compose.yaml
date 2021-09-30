@@ -11,12 +11,12 @@ services:
     volumes:
       - ./conf/sonarr/config:/config
       - /data:/data
-    hostname: sonarr.gop.onl
+    hostname: sonarr.gopnik.net
     #ports:
     #  - 8989:8989
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.sonarr.rule=Host(`sonarr.gop.onl`)"
+      - "traefik.http.routers.sonarr.rule=Host(`sonarr.gopnik.net`)"
       - "traefik.http.routers.sonarr.entrypoints=websecure"
       - "traefik.http.routers.sonarr.tls.certresolver=mydnschallenge"
       - "traefik.http.services.sonarr.loadbalancer.server.port=8989"
@@ -34,12 +34,12 @@ services:
   #   volumes:
   #     - ./conf/sonarrvf/config:/config
   #     - /data:/data
-  #   hostname: sonarrvf.gop.onl
+  #   hostname: sonarrvf.gopnik.net
   #   #ports:
   #   #  - 8989:8989
   #   labels:
   #     - "traefik.enable=true"
-  #     - "traefik.http.routers.sonarrvf.rule=Host(`sonarrvf.gop.onl`)"
+  #     - "traefik.http.routers.sonarrvf.rule=Host(`sonarrvf.gopnik.net`)"
   #     - "traefik.http.routers.sonarrvf.entrypoints=websecure"
   #     - "traefik.http.routers.sonarrvf.tls.certresolver=mydnschallenge"
   #     - "traefik.http.services.sonarrvf.loadbalancer.server.port=8989"
@@ -57,12 +57,12 @@ services:
     volumes:
       - ./conf/radarr/config:/config
       - /data:/data
-    hostname: radarr.gop.onl
+    hostname: radarr.gopnik.net
     #ports:
     #  - 7878:7878
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.radarr.rule=Host(`radarr.gop.onl`)"
+      - "traefik.http.routers.radarr.rule=Host(`radarr.gopnik.net`)"
       - "traefik.http.routers.radarr.entrypoints=websecure"
       - "traefik.http.routers.radarr.tls.certresolver=mydnschallenge"
       - "traefik.http.services.radarr.loadbalancer.server.port=7878"
@@ -80,12 +80,12 @@ services:
   #   volumes:
   #     - ./conf/radarrvf/config:/config
   #     - /data:/data
-  #   hostname: radarrvf.gop.onl
+  #   hostname: radarrvf.gopnik.net
   #   #ports:
   #   #  - 7878:7878
   #   labels:
   #     - "traefik.enable=true"
-  #     - "traefik.http.routers.radarrvf.rule=Host(`radarrvf.gop.onl`)"
+  #     - "traefik.http.routers.radarrvf.rule=Host(`radarrvf.gopnik.net`)"
   #     - "traefik.http.routers.radarrvf.entrypoints=websecure"
   #     - "traefik.http.routers.radarrvf.tls.certresolver=mydnschallenge"
   #     - "traefik.http.services.radarrvf.loadbalancer.server.port=7878"
@@ -107,7 +107,7 @@ services:
     restart: unless-stopped
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.nzbget.rule=Host(`nzbget.gop.onl`)"
+      - "traefik.http.routers.nzbget.rule=Host(`nzbget.gopnik.net`)"
       - "traefik.http.routers.nzbget.entrypoints=websecure"
       - "traefik.http.routers.nzbget.tls.certresolver=mydnschallenge"
       - "traefik.http.services.nzbget.loadbalancer.server.port=6789"
@@ -127,7 +127,7 @@ services:
     restart: unless-stopped
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.nzb2.rule=Host(`nzb2.gop.onl`)"
+      - "traefik.http.routers.nzb2.rule=Host(`nzb2.gopnik.net`)"
       - "traefik.http.routers.nzb2.entrypoints=websecure"
       - "traefik.http.routers.nzb2.tls.certresolver=mydnschallenge"
       - "traefik.http.services.nzb2.loadbalancer.server.port=5076"
@@ -196,7 +196,7 @@ services:
     container_name: traefik
     image: traefik:latest
     read_only: true
-    hostname: traefik.gop.onl
+    hostname: traefik.gopnik.net
     ports:
       - "80:80"
       - "443:443"
