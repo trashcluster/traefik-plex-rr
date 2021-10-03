@@ -147,6 +147,8 @@ services:
       - ./conf/plex/config:/config
       - ./conf/plex/transcode:/transcode
       - /data:/data
+    devices:
+      - /dev/dri
     hostname: plex.gopnik.net
     ports:
      - 32400:32400/tcp
@@ -224,6 +226,7 @@ services:
     container_name: tdarr-node
     image: haveagitgat/tdarr_node:latest
     restart: unless-stopped
+    network_mode: service:tdarr
     environment:
       - TZ=Europe/Paris
       - PUID=1000
@@ -234,10 +237,29 @@ services:
       - nodePort=8267
       - serverIP=0.0.0.0
       - serverPort=8266
+    devices:
+      - /dev/dri
     volumes:
       - ./conf/tdarrnode/configs:/app/configs
       - ./conf/tdarrnode/logs:/app/logs
       - /data:/data
+
+
+  rclone:
+    container_name: rclone
+    image: rclone/rclone:latest
+    restart: unless-stopped
+    volumes:
+      - /etc/passwd:/etc/passwd:ro
+      - /etc/group:/etc/group:ro
+      - /home/axel/.config/rclone:/config/rclone
+      - /data:/data:shared
+    user: 1000:1000
+    devices:
+     - /dev/fuse
+    cap_add:
+     - SYS_ADMIN
+    command: "mount drive: /data/drive -vvvv"
   ######################################################################################################################
 
   traefik:
