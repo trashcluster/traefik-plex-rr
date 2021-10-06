@@ -138,14 +138,14 @@ services:
     container_name: plex
     environment:
       - TZ=Europe/Paris
-      - PLEX_CLAIM=claim-HocHKyyus2ra9VJGv35Y
+      - PLEX_CLAIM=claim-jyiXzUgd8XTzyMtGGzdm
       - ADVERTISE_IP=https://plex.gopnik.net:443
       - PLEX_UID=1000
       - PLEX_GID=1000
       - VERSION=docker
     volumes:
       - ./conf/plex/config:/config
-      - ./conf/plex/transcode:/transcode
+      - /data/ram/plex/transcode:/transcode
       - /data:/data
     devices:
       - /dev/dri
@@ -244,22 +244,24 @@ services:
       - ./conf/tdarrnode/logs:/app/logs
       - /data:/data
 
-
-  rclone:
-    container_name: rclone
-    image: rclone/rclone:latest
+  handbrake:
     restart: unless-stopped
+    container_name: handbrake
+    image: jlesage/handbrake
     volumes:
-      - /etc/passwd:/etc/passwd:ro
-      - /etc/group:/etc/group:ro
-      - /home/axel/.config/rclone:/config/rclone
-      - /data:/data:shared
-    user: 1000:1000
+      - /data:/data
+      - /data/handbrake/watch:/watch
+      - /data/handbrake/output:/output
+      - ./conf/handbrake/config:/config
     devices:
-     - /dev/fuse
-    cap_add:
-     - SYS_ADMIN
-    command: "mount drive: /data/drive -vvvv"
+      - /dev/dri
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.handbrake.rule=Host(`handbrake.gopnik.net`)"
+      - "traefik.http.routers.handbrake.entrypoints=websecure"
+      - "traefik.http.routers.handbrake.tls.certresolver=mydnschallenge"
+      - "traefik.http.services.handbrake.loadbalancer.server.port=5800"
+
   ######################################################################################################################
 
   traefik:
