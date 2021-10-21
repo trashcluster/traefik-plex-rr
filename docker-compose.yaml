@@ -262,6 +262,25 @@ services:
       - "traefik.http.routers.handbrake.tls.certresolver=mydnschallenge"
       - "traefik.http.services.handbrake.loadbalancer.server.port=5800"
 
+  overseerr:
+    image: linuxserver/overseerr:latest
+    container_name: overseerr
+    restart: unless-stopped
+    environment:
+      - TZ=Europe/Paris # Specify a timezone to use
+      - PUID=1000 # User ID to run as
+      - PGID=1000 # Group ID to run as
+    volumes:
+      - ./config/overseer/config:/config # Contains all relevant configuration files.
+    # ports:
+    #   - 5055:5055/tcp # Web UI
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.overseer.rule=Host(`overseer.gopnik.net`)"
+      - "traefik.http.routers.overseer.entrypoints=websecure"
+      - "traefik.http.routers.overseer.tls.certresolver=mydnschallenge"
+      - "traefik.http.services.overseer.loadbalancer.server.port=5055"
+
   ######################################################################################################################
 
   traefik:
