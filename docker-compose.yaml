@@ -66,7 +66,7 @@ services:
       - "traefik.http.routers.radarr.entrypoints=websecure"
       - "traefik.http.routers.radarr.tls.certresolver=mydnschallenge"
       - "traefik.http.services.radarr.loadbalancer.server.port=7878"
-      - "traefik.http.routers.radarr.middlewares=traefik-forward-auth"
+      #- "traefik.http.routers.radarr.middlewares=traefik-forward-auth"
     restart: unless-stopped
 
   # radarrVF:
@@ -131,7 +131,7 @@ services:
       - "traefik.http.routers.nzb2.entrypoints=websecure"
       - "traefik.http.routers.nzb2.tls.certresolver=mydnschallenge"
       - "traefik.http.services.nzb2.loadbalancer.server.port=5076"
-      - "traefik.http.routers.nzb2.middlewares=traefik-forward-auth"
+      #- "traefik.http.routers.nzb2.middlewares=traefik-forward-auth"
       
   plex:
     image: plexinc/pms-docker:latest
@@ -271,7 +271,7 @@ services:
       - PUID=1000 # User ID to run as
       - PGID=1000 # Group ID to run as
     volumes:
-      - ./config/overseer/config:/config # Contains all relevant configuration files.
+      - ./conf/overseer/config:/config # Contains all relevant configuration files.
     # ports:
     #   - 5055:5055/tcp # Web UI
     labels:
@@ -280,6 +280,13 @@ services:
       - "traefik.http.routers.overseer.entrypoints=websecure"
       - "traefik.http.routers.overseer.tls.certresolver=mydnschallenge"
       - "traefik.http.services.overseer.loadbalancer.server.port=5055"
+  ts:
+    image: teamspeak:latest
+    container_name: ts
+    restart: unless-stopped
+    volumes:
+      - ./conf/ts3/:/var/ts3server
+    network_mode: bridge
 
   ######################################################################################################################
 
