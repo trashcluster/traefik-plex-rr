@@ -1,4 +1,4 @@
-version: "3"
+version: "3.4"
 services:
   sonarr:
     image: ghcr.io/linuxserver/sonarr
@@ -11,42 +11,21 @@ services:
     volumes:
       - ./conf/sonarr/config:/config
       - /data:/data
-    hostname: sonarr.gopnik.net
+    hostname: sonarr.DOMAIN
     #ports:
     #  - 8989:8989
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.sonarr.rule=Host(`sonarr.gopnik.net`)"
+      - "traefik.http.routers.sonarr.rule=Host(`sonarr.DOMAIN`)"
       - "traefik.http.routers.sonarr.entrypoints=websecure"
       - "traefik.http.routers.sonarr.tls.certresolver=mydnschallenge"
       - "traefik.http.services.sonarr.loadbalancer.server.port=8989"
-      #- "traefik.http.routers.sonarr.middlewares=traefik-forward-auth"
+      - "traefik.http.routers.sonarr.middlewares=traefik-forward-auth"
+      - "traefik.docker.network=traefik"
     restart: unless-stopped
     networks:
       - traefik
-
-  # sonarrVF:
-  #   image: ghcr.io/linuxserver/sonarr
-  #   container_name: sonarrVF
-  #   environment:
-  #     - PUID=1000
-  #     - PGID=1000
-  #     - TZ=Europe/Paris
-  #     - UMASK_SET=022 #optional
-  #   volumes:
-  #     - ./conf/sonarrvf/config:/config
-  #     - /data:/data
-  #   hostname: sonarrvf.gopnik.net
-  #   #ports:
-  #   #  - 8989:8989
-  #   labels:
-  #     - "traefik.enable=true"
-  #     - "traefik.http.routers.sonarrvf.rule=Host(`sonarrvf.gopnik.net`)"
-  #     - "traefik.http.routers.sonarrvf.entrypoints=websecure"
-  #     - "traefik.http.routers.sonarrvf.tls.certresolver=mydnschallenge"
-  #     - "traefik.http.services.sonarrvf.loadbalancer.server.port=8989"
-  #     - "traefik.http.routers.sonarrvf.middlewares=traefik-forward-auth"
-  #   restart: unless-stopped
+      - default
 
   radarr:
     image: ghcr.io/linuxserver/radarr
@@ -59,46 +38,30 @@ services:
     volumes:
       - ./conf/radarr/config:/config
       - /data:/data
-    hostname: radarr.gopnik.net
+    hostname: radarr.DOMAIN
     #ports:
     #  - 7878:7878
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.radarr.rule=Host(`radarr.gopnik.net`)"
+      - "traefik.http.routers.radarr.rule=Host(`radarr.DOMAIN`)"
       - "traefik.http.routers.radarr.entrypoints=websecure"
       - "traefik.http.routers.radarr.tls.certresolver=mydnschallenge"
       - "traefik.http.services.radarr.loadbalancer.server.port=7878"
-      #- "traefik.http.routers.radarr.middlewares=traefik-forward-auth"
+      - "traefik.http.routers.radarr.middlewares=traefik-forward-auth"
+      - "traefik.docker.network=traefik"
     restart: unless-stopped
     networks:
       - traefik
-
-  # radarrVF:
-  #   image: ghcr.io/linuxserver/radarr
-  #   container_name: radarrVF
-  #   environment:
-  #     - PUID=1000
-  #     - PGID=1000
-  #     - TZ=Europe/Paris
-  #     - UMASK_SET=022 #optional
-  #   volumes:
-  #     - ./conf/radarrvf/config:/config
-  #     - /data:/data
-  #   hostname: radarrvf.gopnik.net
-  #   #ports:
-  #   #  - 7878:7878
-  #   labels:
-  #     - "traefik.enable=true"
-  #     - "traefik.http.routers.radarrvf.rule=Host(`radarrvf.gopnik.net`)"
-  #     - "traefik.http.routers.radarrvf.entrypoints=websecure"
-  #     - "traefik.http.routers.radarrvf.tls.certresolver=mydnschallenge"
-  #     - "traefik.http.services.radarrvf.loadbalancer.server.port=7878"
-  #     - "traefik.http.routers.radarrvf.middlewares=traefik-forward-auth"
-  #   restart: unless-stopped
+      - default
 
   nzbget:
     image: linuxserver/nzbget
     container_name: nzbget
+    deploy:
+        resources:
+            limits:
+              cpus: "6"
+              memory: "4G"    
     environment:
       - PUID=1000
       - PGID=1000
@@ -111,43 +74,22 @@ services:
     restart: unless-stopped
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.nzbget.rule=Host(`nzbget.gopnik.net`)"
+      - "traefik.http.routers.nzbget.rule=Host(`nzbget.DOMAIN`)"
       - "traefik.http.routers.nzbget.entrypoints=websecure"
       - "traefik.http.routers.nzbget.tls.certresolver=mydnschallenge"
       - "traefik.http.services.nzbget.loadbalancer.server.port=6789"
+      - "traefik.docker.network=traefik"
     networks:
       - traefik
-
-  nzbhydra2:
-    image: ghcr.io/linuxserver/nzbhydra2
-    container_name: nzbhydra2
-    environment:
-      - PUID=1000
-      - PGID=1000
-      - TZ=Europe/London
-    volumes:
-      - ./conf/nzbhydra2/config:/config
-      - ./conf/nzbhydra2/downloads:/downloads
-    #ports:
-    #  - 5076:5076
-    restart: unless-stopped
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.nzb2.rule=Host(`nzb2.gopnik.net`)"
-      - "traefik.http.routers.nzb2.entrypoints=websecure"
-      - "traefik.http.routers.nzb2.tls.certresolver=mydnschallenge"
-      - "traefik.http.services.nzb2.loadbalancer.server.port=5076"
-      # - "traefik.http.routers.nzb2.middlewares=traefik-forward-auth"
-    networks:
-      - traefik
+      - default
       
   plex:
     image: plexinc/pms-docker:latest
     container_name: plex
     environment:
       - TZ=Europe/Paris
-      - PLEX_CLAIM=claim-jyiXzUgd8XTzyMtGGzdm
-      - ADVERTISE_IP=https://plex.gopnik.net:443
+      - PLEX_CLAIM=CLAIMTOKEN
+      - ADVERTISE_IP=https://plex.DOMAIN:443
       - PLEX_UID=1000
       - PLEX_GID=1000
       - VERSION=docker
@@ -157,7 +99,7 @@ services:
       - /data:/data
     devices:
       - /dev/dri
-    hostname: plex.gopnik.net
+    hostname: plex.DOMAIN
     ports:
      - 32400:32400/tcp
      - 32400:32400/udp
@@ -172,227 +114,72 @@ services:
     restart: always
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.plex.rule=Host(`plex.gopnik.net`)"
+      - "traefik.http.routers.plex.rule=Host(`plex.DOMAIN`)"
       - "traefik.http.routers.plex.entrypoints=websecure"
       - "traefik.http.routers.plex.tls.certresolver=mydnschallenge"
       - "traefik.http.services.plex.loadbalancer.server.port=32400"
+      - "traefik.docker.network=traefik"
     networks:
       - traefik
-      
-  traefik-forward-auth:
-    image: thomseddon/traefik-forward-auth:2
-    container_name: traefik-forward-auth
-    restart: always
-    environment:
-      - DEFAULT_PROVIDER=oidc
-      - PROVIDERS_OIDC_ISSUER_URL=OIDCIssuer
-      - PROVIDERS_OIDC_CLIENT_ID=ClientID
-      - PROVIDERS_OIDC_CLIENT_SECRET=ClientSecret
-      - SECRET=SECRET
-      # INSECURE_COOKIE is required if not using a https entrypoint
-      - INSECURE_COOKIE=true
-      - LOG_LEVEL=debug
-    labels:
-      - "traefik.http.routers.forwardauth.rule=Host(auth.gopnik.net)"
-      - "traefik.http.routers.forwardauth.tls.certresolver=mydnschallenge"
-      - "traefik.http.routers.forwardauth.tls=true" #Don't believe this is actually required
-      - "traefik.http.routers.forwardauth.middlewares=traefik-forward-auth"
-      - "traefik.http.middlewares.traefik-forward-auth.forwardauth.address=http://traefik-forward-auth:4181"
-      - "traefik.http.middlewares.traefik-forward-auth.forwardauth.authResponseHeaders=X-Forwarded-User"
-      - "traefik.http.middlewares.traefik-forward-auth.forwardauth.trustForwardHeader=true"
-      - "traefik.http.services.traefik-forward-auth.loadbalancer.server.port=4181"
-    networks:
-      - traefik
-
-
-#  tdarr:
-#    container_name: tdarr
-#    image: haveagitgat/tdarr:latest
-#    restart: unless-stopped
-    #ports:
-      #- 8265:8265 # webUI port
-      #- 8266:8266 # server port
-      #- 8267:8267 # node port. It should be mapped on this container because
-#                  # the node container use the network from the main container
-#    environment:
-#      - TZ=Europe/Paris
-#      - PUID=1000
-#      - PGID=1000
-#      - UMASK_SET=002
-#      - serverIP=0.0.0.0
-#      - serverPort=8266
-#      - webUIPort=8265
-#    volumes:
-#      - ./conf/tdarr/server:/app/server
-#      - ./conf/tdarr/configs:/app/configs
-#      - ./conf/tdarr/logs:/app/logs
-#      - /data:/data
-#    labels:
-#      - "traefik.enable=true"
-#      - "traefik.http.routers.tdarr.rule=Host(`tdarr.gopnik.net`)"
-#      - "traefik.http.routers.tdarr.entrypoints=websecure"
-#      - "traefik.http.routers.tdarr.tls.certresolver=mydnschallenge"
-#      - "traefik.http.services.tdarr.loadbalancer.server.port=8265"
-
-#  tdarr-node:
-#    container_name: tdarr-node
-#    image: haveagitgat/tdarr_node:latest
-#    restart: unless-stopped
-#    network_mode: service:tdarr
-#    environment:
-#      - TZ=Europe/Paris
-#      - PUID=1000
-#      - PGID=1000
-#      - UMASK_SET=002
-#      - nodeID=MainNode
-#      - nodeIP=0.0.0.0
-#      - nodePort=8267
-#      - serverIP=0.0.0.0
-#      - serverPort=8266
-#    devices:
-#      - /dev/dri
-#    volumes:
-#      - ./conf/tdarrnode/configs:/app/configs
-#      - ./conf/tdarrnode/logs:/app/logs
-#      - /data:/data
-
-#  handbrake:
-#    restart: unless-stopped
-#    container_name: handbrake
-#    image: jlesage/handbrake
-#    volumes:
-#      - /data:/data
-#      - /data/handbrake/watch:/watch
-#      - /data/handbrake/output:/output
-#      - ./conf/handbrake/config:/config
-#    devices:
-#      - /dev/dri
-#    labels:
-#      - "traefik.enable=true"
-#      - "traefik.http.routers.handbrake.rule=Host(`handbrake.gopnik.net`)"
-#      - "traefik.http.routers.handbrake.entrypoints=websecure"
-#      - "traefik.http.routers.handbrake.tls.certresolver=mydnschallenge"
-#      - "traefik.http.services.handbrake.loadbalancer.server.port=5800"
-
-  overseerr:
-    image: linuxserver/overseerr:latest
-    container_name: overseerr
-    restart: unless-stopped
-    environment:
-      - TZ=Europe/Paris # Specify a timezone to use
-      - PUID=1000 # User ID to run as
-      - PGID=1000 # Group ID to run as
-    volumes:
-      - ./conf/overseer/config:/config # Contains all relevant configuration files.
-    # ports:
-    #   - 5055:5055/tcp # Web UI
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.overseer.rule=Host(`overseer.gopnik.net`)"
-      - "traefik.http.routers.overseer.entrypoints=websecure"
-      - "traefik.http.routers.overseer.tls.certresolver=mydnschallenge"
-      - "traefik.http.services.overseer.loadbalancer.server.port=5055"
-    networks:
-      - traefik
-
-  ts:
-    image: teamspeak
-    container_name: ts
-    restart: always
-    ports:
-      - 9987:9987/udp
-      - 10011:10011
-      - 30033:30033
-    environment:
-      TS3SERVER_DB_PLUGIN: ts3db_mariadb
-      TS3SERVER_DB_SQLCREATEPATH: create_mariadb
-      TS3SERVER_DB_HOST: db
-      TS3SERVER_DB_USER: root
-      TS3SERVER_DB_PASSWORD: example
-      TS3SERVER_DB_NAME: teamspeak
-      TS3SERVER_DB_WAITUNTILREADY: 30
-      TS3SERVER_LICENSE: accept
-  db:
-    image: mariadb
-    container_name: mariadb
-    restart: always
-    environment:
-      MYSQL_ROOT_PASSWORD: example
-      MYSQL_DATABASE: teamspeak
-
-  unmanic:
-    image: josh5/unmanic:latest
-    container_name: unmanic
-    restart: unless-stopped
-    environment:
-      - TZ=Europe/Paris
-      - PUID=1000
-      - PGID=1000
-      - UMASK_SET=002
-    volumes:
-      - ./conf/unmanic/config:/config
-      - /data/ram/unmanic:/tmp/unmanic
-      - /data:/data
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.unmanic.rule=Host(`unmanic.gopnik.net`)"
-      - "traefik.http.routers.unmanic.entrypoints=websecure"
-      - "traefik.http.routers.unmanic.tls.certresolver=mydnschallenge"
-      - "traefik.http.services.unmanic.loadbalancer.server.port=8888"
-    networks:
-      - traefik
-
-  broker:
-    image: redis:6.0
-    container_name: redis
-    restart: unless-stopped
-
-  webserver:
-    image: jonaswinkler/paperless-ng:latest
-    restart: unless-stopped
-    container_name: paperless
-    depends_on:
-      - broker
-    #ports:
-      #- 8000:8000
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8000"]
-      interval: 30s
-      timeout: 10s
-      retries: 5
-    volumes:
-      - /data/raid/paperless/data:/usr/src/paperless/data
-      - /data/raid/paperless/media:/usr/src/paperless/media
-      - ./conf/paperless/export:/usr/src/paperless/export
-      - ./conf/paperless/consume:/usr/src/paperless/consume
-    env_file: docker-compose.env
-    environment:
-      PAPERLESS_REDIS: redis://broker:6379
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.paperless.rule=Host(`paperless.gopnik.net`)"
-      - "traefik.http.routers.apperless.entrypoints=websecure"
-      - "traefik.http.routers.apperless.tls.certresolver=mydnschallenge"
-      - "traefik.http.services.paperless.loadbalancer.server.port=8000"
-#############################################################################################
 
   traefik:
     restart: always
     container_name: traefik
-    image: traefik:latest
+    image: traefik:v2.9
     read_only: true
-    hostname: traefik.gopnik.net
+    hostname: traefik.DOMAIN
+    environment:
+      - X-OVH-TOKEN=TOKEN
+    logging:
+      driver: "gelf"
+      options:
+        gelf-address: "udp://gra3.logs.ovh.com:2202"
+        labels: "traefik"
+        env: "X-OVH-TOKEN"
+        mode: "non-blocking"
     ports:
       - "80:80"
       - "443:443"
       #- "8080:8080"
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
-      - ./traefik.yaml:/traefik.yaml:ro
-      - ./conf/traefik/etc/traefik:/etc/traefik/
-      - ./conf/traefik/log:/var/log/traefik/
+      #- ./traefik.yaml:/traefik.yaml:ro
+      - ./conf/traefik/etc/traefik/:/etc/traefik/
+      - ./conf/traefik/log/:/var/log/traefik/
+    labels:
+      - "traefik.http.routers.api.rule=Host(`traefik.DOMAIN`)"
+      - "traefik.http.routers.api.service=api@internal"
+      #- "traefik.http.routers.api.middlewares=auth"
+      #- "traefik.http.middlewares.auth.basicauth.users=test:$$apr1$$H6uskkkW$$IgXLP6ewTrSuBkTrqE8wj/,test2:$$apr1$$d9hr9HBB$$4HxwgUir3HP4EsggP/QNo0"
+      - "traefik.enable=true"
+      - "traefik.http.routers.api.entrypoints=websecure"
+      - "traefik.http.routers.api.tls.certresolver=mydnschallenge"
+      - "traefik.docker.network=traefik"
     networks:
       - traefik
+
+  forwardauth:
+    image: mesosphere/traefik-forward-auth
+    networks:
+      - traefik
+    environment:
+      - SECRET=SEEEEEEEEEEEEEEEECReT
+      - PROVIDER_URI=REALM URL
+      - CLIENT_ID=CLIENTID
+      - CLIENT_SECRET=SECRET
+      - LOG_LEVEL=debug
+    labels:
+      - "traefik.enable=true"
+      - "traefik.docker.network=traefik"
+      - "traefik.http.services.forwardauth.loadbalancer.server.port=4181"
+      - "traefik.http.routers.forwardauth.entrypoints=websecure"
+      - "traefik.http.routers.forwardauth.rule=Path(`/_oauth`)"
+      - "traefik.http.routers.forwardauth.middlewares=traefik-forward-auth"
+      - "traefik.http.middlewares.traefik-forward-auth.forwardauth.address=http://forwardauth:4181"
+      - "traefik.http.middlewares.traefik-forward-auth.forwardauth.authResponseHeaders=X-Forwarded-User"
+      - "traefik.http.middlewares.traefik-forward-auth.forwardauth.trustForwardHeader=true"
+      - "traefik.http.routers.traefik-forward-auth.tls=true"
+      - "traefik.http.routers.traefik-forward-auth.tls.certresolver=mydnschallenge"
 
 networks:
   traefik:
